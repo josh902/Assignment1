@@ -1,0 +1,54 @@
+﻿@model ForumApp.Models.Discussion
+
+@{
+    ViewData["Title"] = "Create Discussion";
+}
+
+<h1>Create Discussion</h1>
+
+<h4>Discussion</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Title field for the discussion -->
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <!-- Content field for the discussion -->
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+
+            <!-- Image upload field -->
+            <div class="form-group">
+                <label for="imageFile" class="control-label">Upload Image</label>
+                <input type="file" name="imageFile" class="form-control" />
+                <span class="text-danger"></span> <!-- Remove asp-validation-for because ImageUrl is not a file -->
+            </div>
+
+
+            <!-- Submit button -->
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

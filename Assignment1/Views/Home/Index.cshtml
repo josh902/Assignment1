@@ -1,0 +1,25 @@
+﻿@model List<DiscussionViewModel>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<h2>Discussion Threads</h2>
+
+@foreach (var discussion in Model)
+{
+    <div class="discussion-item">
+        <a href="@Url.Action("GetDiscussion", "Home", new { id = discussion.DiscussionId })">
+            <h3>@discussion.Title</h3>
+        </a>
+
+        <p>Comments: @discussion.CommentCount</p>
+        <p>Created At: @discussion.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+
+        @if (!string.IsNullOrEmpty(discussion.ImageFilename))
+        {
+            <img src="~/images/@discussion.ImageFilename" alt="Discussion Image" width="100" height="100" />
+        }
+    </div>
+    <hr />
+}
