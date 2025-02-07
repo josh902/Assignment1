@@ -1,31 +1,108 @@
+/* Existing Styles */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: lightblue; /* Light blue background */
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
+
+/* New Styles for Discussion Thumbnails */
+.thumbnail {
+    width: 150px; /* Set a fixed size for thumbnails */
+    height: 150px; /* Maintain square aspect ratio */
+    object-fit: cover; /* Ensure the image covers the box */
+    border-radius: 8px; /* Rounded corners for a clean look */
+    margin-right: 20px; /* Space between image and text */
+}
+
+/* Styling for Discussion Listings */
+.discussion-list-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+    .discussion-list-item:hover {
+        background-color: #f1f1f1;
+    }
+
+    .discussion-list-item .discussion-content {
+        flex-grow: 1;
+    }
+
+    .discussion-list-item .discussion-meta {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+        .discussion-list-item .discussion-meta span {
+            margin-right: 10px;
+        }
+
+        .discussion-list-item .discussion-meta .comments {
+            font-weight: bold;
+        }
+
+/* Discussion Page Styling */
+.discussion-detail {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .discussion-detail h2 {
+        font-size: 1.8rem;
+        color: #333;
+    }
+
+.comment-section {
+    margin-top: 30px;
+}
+
+.comment {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+}
+
+    .comment .comment-author {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .comment .comment-content {
+        margin-top: 5px;
+        color: #555;
+    }

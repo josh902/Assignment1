@@ -24,13 +24,15 @@ public class HomeController : Controller
                 DiscussionId = d.DiscussionId,
                 Title = d.Title,
                 CreatedAt = d.CreatedAt,
-                CommentCount = d.Comments.Count,
+                // Just use Count() since it can't be null
+                CommentCount = d.Comments.Count(),
                 ImageFilename = d.ImageFilename
             })
             .ToListAsync();
 
         return View(discussions);
     }
+
 
     public async Task<IActionResult> GetDiscussion(int id)
     {
