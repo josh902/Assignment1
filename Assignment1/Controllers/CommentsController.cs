@@ -7,38 +7,38 @@ namespace Assignment1.Controllers
 {
     public class CommentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; // Database connection
 
         public CommentsController(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context; // Initialize the database context
         }
 
         // GET: Comments/Create
         public IActionResult Create(int discussionId)
         {
-            ViewBag.DiscussionId = discussionId;  // Pass the DiscussionId to the view for the form
-            return View();
+            ViewBag.DiscussionId = discussionId;  // Store discussion ID for the form
+            return View(); // Show the create comment form
         }
 
         // POST: Comments/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Security to prevent CSRF attacks
         public async Task<IActionResult> Create([Bind("Content, DiscussionId")] Comment comment)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) // Check if input is valid
             {
-                // Set the CreatedAt to the current time
+                // Set the CreatedAt time for the new comment
                 comment.CreatedAt = DateTime.Now;
 
                 _context.Add(comment);  // Add the new comment to the database
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // Save changes to the database
 
-                // Redirect to the Discussion details page (you will create this page later)
+                // Redirect back to the discussion details page
                 return RedirectToAction("Details", "Discussions", new { id = comment.DiscussionId });
             }
 
-            // If the model is not valid, return to the view with the error
+            // If input is invalid, return to the form with the current data
             return View(comment);
         }
     }

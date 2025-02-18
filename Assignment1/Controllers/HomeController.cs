@@ -1,6 +1,4 @@
-using Assignment1.Models;
 using ForumApp.Data;
-using ForumApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -8,43 +6,32 @@ using System.Threading.Tasks;
 
 public class HomeController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context; // Database connection
 
     public HomeController(ApplicationDbContext context)
     {
-        _context = context;
+        _context = context; // Initialize database
     }
 
+    // GET: Home/Index (Show homepage with discussions)
     public async Task<IActionResult> Index()
     {
         var discussions = await _context.Discussions
-            .OrderByDescending(d => d.CreatedAt)
-            .Select(d => new DiscussionViewModel
-            {
-                DiscussionId = d.DiscussionId,
-                Title = d.Title,
-                CreatedAt = d.CreatedAt,
-                // Just use Count() since it can't be null
-                CommentCount = d.Comments.Count(),
-                ImageFilename = d.ImageFilename
-            })
+            .OrderByDescending(d => d.CreatedAt) // Show newest first
             .ToListAsync();
 
-        return View(discussions);
+        return View(discussions); // Send data to the homepage view
     }
 
-
-    public async Task<IActionResult> GetDiscussion(int id)
+    // GET: Home/Privacy (Show privacy page)
+    public IActionResult Privacy()
     {
-        var discussion = await _context.Discussions
-            .Include(d => d.Comments)
-            .FirstOrDefaultAsync(d => d.DiscussionId == id);
+        return View();
+    }
 
-        if (discussion == null)
-        {
-            return NotFound();
-        }
-
-        return View(discussion);
+    // Handle errors
+    public IActionResult Error()
+    {
+        return View();
     }
 }
