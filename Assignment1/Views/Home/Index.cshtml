@@ -16,10 +16,11 @@
 
         <p>Comments: @discussion.CommentCount</p> <!-- Show comment count -->
         <p>Created At: @discussion.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p> <!-- Format date properly -->
-        @if (!string.IsNullOrEmpty(discussion.ImageUrl)) // Use correct property name (ImageUrl)
+        @if (!string.IsNullOrEmpty(discussion.ImageUrl))
         {
-            <img src="~/images/@discussion.ImageUrl" alt="Discussion Image" class="thumbnail" />
+            <img src="@discussion.ImageUrl" alt="Discussion Image" width="200" />
         }
+
     </div>
     <hr />
 }
