@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 
@@ -7,25 +8,23 @@ namespace ForumApp.Models
 {
     public class Discussion
     {
-        public int DiscussionId { get; set; }
+        [Key] // Marks this as the primary key
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-generates ID
+        public int DiscussionId { get; set; } // Use this as the unique ID for discussions
 
-        public string? Title { get; set; }
+        public string? Title { get; set; } // Discussion title
 
-        public string? Content { get; set; }
+        public string? Content { get; set; } // Discussion content
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;  // Automatically sets to current date and time
+        public DateTime CreatedAt { get; set; } = DateTime.Now; // Sets current date when created
 
-        public List<Comment> Comments { get; set; } = new List<Comment>();  // Navigation Property for Comments
+        public List<Comment> Comments { get; set; } = new List<Comment>(); // List of comments linked to discussion
 
-        // Store the file path or URL of the image
-        public string? ImageUrl { get; set; }  // This is optional but can be used for the full image URL
+        public string? ImageUrl { get; set; } // Stores image file path or URL
 
-        // This property is used to store the filename of the uploaded image
-        public string? ImageFilename { get; set; }  // This will be used for storing just the filename
+        public string? ImageFilename { get; set; } // Stores only the filename of the image
 
-        // This property is only for handling file uploads, do not map it to the database
-        [NotMapped]
-        public IFormFile? Image { get; set; }
-
+        [NotMapped] // This will not be saved in the database
+        public IFormFile? Image { get; set; } // Used to handle file uploads
     }
 }

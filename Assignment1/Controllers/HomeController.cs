@@ -1,37 +1,49 @@
 using ForumApp.Data;
+using ForumApp.Models; // Fixed namespace to match where DiscussionViewModel is defined
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Assignment1.Models;
 
-public class HomeController : Controller
+namespace ForumApp.Controllers // Ensure the namespace is correctly set
 {
-    private readonly ApplicationDbContext _context; // Database connection
-
-    public HomeController(ApplicationDbContext context)
+    public class HomeController : Controller
     {
-        _context = context; // Initialize database
-    }
+        private readonly ApplicationDbContext _context;
 
-    // GET: Home/Index (Show homepage with discussions)
-    public async Task<IActionResult> Index()
-    {
-        var discussions = await _context.Discussions
-            .OrderByDescending(d => d.CreatedAt) // Show newest first
-            .ToListAsync();
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-        return View(discussions); // Send data to the homepage view
-    }
+        // GET: Home/Index
+        public async Task<IActionResult> Index()
+        {
+            var discussions = await _context.Discussions
+                .OrderByDescending(d => d.CreatedAt) // Show newest first
+                .Select(d => new DiscussionViewModel // Convert to correct model
+                {
+                    DiscussionId = d.DiscussionId, // Ensure consistency with model
+                    Title = d.Title,
+                    Content = d.Content,
+                    CreatedAt = d.CreatedAt,
+                    ImageUrl = d.ImageUrl // If you have images
+                })
+                .ToListAsync();
 
-    // GET: Home/Privacy (Show privacy page)
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+            return View(discussions); // Now the correct type is passed
+        }
 
-    // Handle errors
-    public IActionResult Error()
-    {
-        return View();
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

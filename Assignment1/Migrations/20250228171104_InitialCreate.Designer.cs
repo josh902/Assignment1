@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250207153532_FixModelChanges")]
-    partial class FixModelChanges
+    [Migration("20250228171104_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,21 +27,16 @@ namespace Assignment1.Migrations
 
             modelBuilder.Entity("ForumApp.Models.Comment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
                     b.Property<string>("Author")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -50,7 +45,7 @@ namespace Assignment1.Migrations
                     b.Property<int>("DiscussionId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("CommentId");
 
                     b.HasIndex("DiscussionId");
 
@@ -59,17 +54,21 @@ namespace Assignment1.Migrations
 
             modelBuilder.Entity("ForumApp.Models.Discussion", b =>
                 {
-                    b.Property<int>("DiscussionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DiscussionId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DiscussionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("DiscussionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageFilename")
                         .HasColumnType("nvarchar(max)");
@@ -80,9 +79,13 @@ namespace Assignment1.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("DiscussionId");
+                    b.HasKey("Id");
 
-                    b.ToTable("Discussions");
+                    b.ToTable("Discussions", t =>
+                        {
+                            t.Property("DiscussionId")
+                                .HasColumnName("DiscussionId1");
+                        });
                 });
 
             modelBuilder.Entity("ForumApp.Models.Comment", b =>

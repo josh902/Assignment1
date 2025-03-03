@@ -79,7 +79,7 @@ namespace Assignment1.Controllers
         {
             if (id == null) return NotFound(); // If no ID, return 404
 
-            var discussion = await _context.Discussions.FindAsync(id);
+            var discussion = await _context.Discussions.FirstOrDefaultAsync(d => d.DiscussionId == id); // Find discussion by ID
             if (discussion == null) return NotFound(); // If discussion not found, return 404
 
             return View(discussion); // Show edit form
@@ -110,7 +110,7 @@ namespace Assignment1.Controllers
                         discussion.ImageUrl = "/images/" + fileName; // Update image path
                     }
 
-                    _context.Update(discussion);
+                    _context.Update(discussion); // Update discussion
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -135,7 +135,7 @@ namespace Assignment1.Controllers
             if (id == null) return NotFound(); // If no ID, return 404
 
             var discussion = await _context.Discussions
-                .FirstOrDefaultAsync(m => m.DiscussionId == id);
+                .FirstOrDefaultAsync(m => m.DiscussionId == id); // Find discussion by ID
             if (discussion == null) return NotFound(); // If discussion not found, return 404
 
             return View(discussion); // Show delete confirmation page
