@@ -34,7 +34,7 @@ namespace Assignment1.Controllers
                 _context.Add(comment);  // Add the new comment to the database
                 await _context.SaveChangesAsync(); // Save changes to the database
 
-                // Redirect back to the discussion details page
+                // Redirect back to the correct discussion details page
                 return RedirectToAction("Details", "Discussions", new { id = comment.DiscussionId });
             }
 

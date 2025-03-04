@@ -1,37 +1,47 @@
 ﻿@model ForumApp.Models.Discussion
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
-
-<div>
-    <h4>Discussion</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Title)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Title)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Content)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Content)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.CreatedAt)</dd>
-
-        <dt class="col-sm-2">Image</dt>
-        <dd class="col-sm-10">
+<h2>Discussion</h2>
+<table>
+    <tr><th>Title</th><td>@Model.Title</td></tr>
+    <tr><th>Content</th><td>@Model.Content</td></tr>
+    <tr><th>CreatedAt</th><td>@Model.CreatedAt</td></tr>
+    <tr>
+        <th>Image</th>
+        <td>
             @if (!string.IsNullOrEmpty(Model.ImageUrl))
             {
-                <img src="@Model.ImageUrl" alt="Discussion Image" style="max-width: 100%; height: auto; border-radius: 10px; margin-top: 10px;" />
+                <img src="@Model.ImageUrl" alt="Discussion Image" style="max-width:100%;" />
             }
-        </dd>
+        </td>
+    </tr>
+</table>
 
-    </dl>
-</div>
+<hr />
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.DiscussionId">Edit</a>
-    |
-    <a asp-action="Index">Back to List</a>
-</div>
+<h3>Comments</h3>
+@if (Model.Comments != null && Model.Comments.Any())
+{
+    <ul>
+        @foreach (var comment in Model.Comments)
+        {
+            <li>@comment.Content - <small>@comment.CreatedAt</small></li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments yet. Be the first to comment!</p>
+}
+
+<hr />
+
+<!-- Comment Form -->
+<h3>Add a Comment</h3>
+<form asp-action="Create" asp-controller="Comments" method="post">
+    <input type="hidden" name="DiscussionId" value="@Model.DiscussionId" />
+    <textarea name="Content" required placeholder="Write your comment..." rows="4" style="width: 100%;"></textarea>
+    <br />
+    <button type="submit">Submit Comment</button>
+</form>
+
+<a asp-action="Index" asp-controller="Discussions">Back to Discussions</a>

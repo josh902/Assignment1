@@ -1,49 +1,71 @@
 using ForumApp.Data;
-using ForumApp.Models; // Fixed namespace to match where DiscussionViewModel is defined
+using ForumApp.Models; 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore; // Allows working with the database using Entity Framework
+using System.Linq; 
+using System.Threading.Tasks; 
 using System.Collections.Generic;
-using Assignment1.Models;
+using Assignment1.Models; // Brings in additional models like DiscussionViewModel
 
-namespace ForumApp.Controllers // Ensure the namespace is correctly set
+namespace ForumApp.Controllers // Defines this as part of the ForumApp namespace
 {
-    public class HomeController : Controller
+    public class HomeController : Controller // This class handles page requests for the Home section
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; // Connects to the database
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context) // Constructor to initialize the database connection
         {
             _context = context;
         }
 
-        // GET: Home/Index
+        // GET: Home/Index (Shows the list of discussions on the homepage)
         public async Task<IActionResult> Index()
         {
             var discussions = await _context.Discussions
-                .OrderByDescending(d => d.CreatedAt) // Show newest first
-                .Select(d => new DiscussionViewModel // Convert to correct model
+                .Include(d => d.Comments) // Include comments to count them
+                .OrderByDescending(d => d.CreatedAt) // Orders discussions by newest first
+                .Select(d => new DiscussionViewModel // Converts database data into a view model
                 {
-                    DiscussionId = d.DiscussionId, // Ensure consistency with model
-                    Title = d.Title,
-                    Content = d.Content,
-                    CreatedAt = d.CreatedAt,
-                    ImageUrl = d.ImageUrl // If you have images
+                    DiscussionId = d.DiscussionId, // Assigns ID from database
+                    Title = d.Title, // Assigns the discussion title
+                    Content = d.Content, // Assigns the discussion content
+                    CreatedAt = d.CreatedAt, // Assigns the discussion creation time
+                    ImageUrl = d.ImageUrl, // Assigns the discussion image URL if available
+                    CommentCount = d.Comments.Count //  This line counts comments
                 })
-                .ToListAsync();
+                .ToListAsync(); // Converts the result to a list
 
-            return View(discussions); // Now the correct type is passed
+            return View(discussions); // Passes discussions to the Index view
         }
 
+        // Redirect users to Discussions/Details/{id} instead of looking for a Home/Details view
+        public async Task<IActionResult> GetDiscussion(int id)
+        {
+            var discussion = await _context.Discussions
+                .Include(d => d.Comments) // Fetch related comments
+                .FirstOrDefaultAsync(d => d.DiscussionId == id);
+
+            if (discussion == null)
+            {
+                return NotFound(); // Return 404 if no discussion exists
+            }
+
+            return RedirectToAction("Details", "Discussions", new { id = discussion.DiscussionId });
+        }
+
+
+
+
+        // GET: Home/Privacy (Loads the Privacy Policy page)
         public IActionResult Privacy()
         {
-            return View();
+            return View(); // Returns the Privacy view
         }
 
+        // GET: Home/Error (Handles errors)
         public IActionResult Error()
         {
-            return View();
+            return View(); // Returns the Error view
         }
     }
 }

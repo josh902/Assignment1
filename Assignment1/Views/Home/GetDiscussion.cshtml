@@ -1,28 +1,32 @@
 ﻿@model ForumApp.Models.Discussion
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Title; // Sets the page title to the discussion title
 }
 
-<h2>@Model.Title</h2>
-
-@if (!string.IsNullOrEmpty(Model.ImageFilename))
+<h2>@Model.Title</h2> <!-- Displays the discussion title -->
+@if (!string.IsNullOrEmpty(Model.ImageFilename)) // Checks if there is an image
 {
-    <img src="~/images/@Model.ImageFilename" alt="Discussion Image" width="300" />
+    <img src="~/images/@Model.ImageFilename" alt="Discussion Image" width="300" /> <!-- Displays the image -->
 }
 
-<p>@Model.Content</p>
-<p>Created At: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+<p>@Model.Content</p> <!-- Shows the discussion content -->
+<p>Created At: @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p> <!-- Displays when the discussion was created -->
 
-<h3>Comments (@Model.Comments.Count)</h3>
-
-@foreach (var comment in Model.Comments)
+<h3>Comments (@Model.Comments.Count)</h3> <!-- Shows the number of comments -->
+@foreach (var comment in Model.Comments) // Loops through each comment in the discussion
 {
     <div class="comment">
-        <p>@comment.Content</p>
-        <small>Posted on: @comment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small>
+        <p>@comment.Content</p> <!-- Displays the comment text -->
+        <small>Posted on: @comment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small> <!-- Shows when the comment was posted -->
     </div>
-    <hr />
+    <hr /> <!-- Adds a horizontal line between comments -->
 }
 
+<!-- Button to add a new comment, passes the DiscussionId to the Create method in CommentsController -->
+<a href="@Url.Action("Create", "Comments", new { discussionId = Model.DiscussionId })" class="btn btn-primary">
+    Add Comment
+</a>
+
+<!-- Link to go back to the list of discussions -->
 <a href="@Url.Action("Index", "Home")">Back to Discussions</a>
