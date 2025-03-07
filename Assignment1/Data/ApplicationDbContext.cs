@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ForumApp.Models;
 
 namespace ForumApp.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -12,11 +14,19 @@ namespace ForumApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Discussion>()
-                .Property(d => d.DiscussionId) // Ensure primary key consistency
-                .HasColumnName("DiscussionId"); // Maps to correct column name
+            base.OnModelCreating(modelBuilder); // Ensure Identity tables are included
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Discussion>()
+    .HasOne(d => d.User)
+    .WithMany()
+    .HasForeignKey(d => d.UserId)
+    .HasPrincipalKey(u => u.Id)
+    .HasConstraintName("FK_Discussions_AspNetUsers_UserId");
+
+            modelBuilder.Entity<IdentityUser>()
+                .ToTable("AspNetUsers"); // Ensure IdentityUser maps to AspNetUsers
+
         }
+
     }
 }

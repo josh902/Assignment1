@@ -6,21 +6,28 @@
 
 <h1>Create Discussion</h1>
 
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="alert alert-warning">
+        You must be logged in to create a discussion.
+    </div>
+}
+
 <h4>Discussion</h4>
 <hr />
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-            <!-- Title field for the discussion -->
+            <!-- Title field -->
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-            <!-- Content field for the discussion -->
+            <!-- Content field -->
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
                 <textarea asp-for="Content" class="form-control" rows="5"></textarea>
@@ -31,9 +38,7 @@
             <div class="form-group">
                 <label for="imageFile" class="control-label">Upload Image</label>
                 <input type="file" name="imageFile" class="form-control" />
-                <span class="text-danger"></span> <!-- Remove asp-validation-for because ImageUrl is not a file -->
             </div>
-
 
             <!-- Submit button -->
             <div class="form-group">

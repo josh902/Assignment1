@@ -27,6 +27,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+
+                    <!-- Include the Login Partial -->
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -46,7 +49,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Optional: Add custom JS functionality for the front-end -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
