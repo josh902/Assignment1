@@ -1,15 +1,30 @@
-﻿
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ForumApp.Models;
 
 namespace ForumApp.Models
 {
     public class Comment
     {
-        public int CommentId { get; set; }  // Primary key for Comment
-        public string? Author { get; set; }  // The author of the comment
-        public string? Content { get; set; }  // Content of the comment
-        public DateTime CreatedAt { get; set; } = DateTime.Now;  // Automatically sets to current date and time
-        public int DiscussionId { get; set; }  // Foreign Key to Discussion
-        public Discussion? Discussion { get; set; }  // Navigation Property (the Discussion this comment belongs to)
+        public int CommentId { get; set; }
+
+        public string? Content { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public int DiscussionId { get; set; }
+
+        [ForeignKey("DiscussionId")]
+        public Discussion? Discussion { get; set; }
+
+        // 🔹 Make UserId nullable (Remove [Required])
+        public string? UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public ApplicationUser? User { get; set; }
+
+        // Optional author field
+        public string? Author { get; set; }
     }
 }

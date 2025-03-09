@@ -1,0 +1,21 @@
+﻿@model List<ForumApp.Models.Discussion>
+
+<h2>My Threads</h2>
+
+@if (Model.Count == 0)
+{
+    <p>You have not created any discussions yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var discussion in Model)
+        {
+            <li>
+                <a asp-controller="Discussions" asp-action="Details" asp-route-id="@discussion.DiscussionId">
+                    @discussion.Title
+                </a>
+            </li>
+        }
+    </ul>
+}

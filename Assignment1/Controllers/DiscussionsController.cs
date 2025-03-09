@@ -15,10 +15,10 @@ namespace Assignment1.Controllers
     public class DiscussionsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager; //  Changed to ApplicationUser
         private readonly string _imageFolderPath;
 
-        public DiscussionsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public DiscussionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) //  Changed to ApplicationUser
         {
             _context = context;
             _userManager = userManager;
@@ -91,8 +91,6 @@ namespace Assignment1.Controllers
             }
         }
 
-
-
         // Show "My Threads" page for the logged-in user
         [Authorize]
         public async Task<IActionResult> MyThreads()
@@ -155,7 +153,6 @@ namespace Assignment1.Controllers
             }
         }
 
-
         // Show the delete confirmation page
         public async Task<IActionResult> Delete(int? id)
         {
@@ -209,5 +206,6 @@ namespace Assignment1.Controllers
                 }
             }
         }
+
     }
 }
