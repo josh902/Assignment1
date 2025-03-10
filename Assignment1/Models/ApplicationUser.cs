@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
@@ -28,5 +29,8 @@ namespace ForumApp.Models
                     : $"/images/{ImageFilename}";
             }
         }
+
+        // Added Discussions List to Fix "ApplicationUser Does Not Contain a Definition for 'Discussions'" Error
+        public List<Discussion> Discussions { get; set; } = new List<Discussion>();
     }
 }

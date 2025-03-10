@@ -1,9 +1,9 @@
-using ForumApp.Data;
-using ForumApp.Models; 
+﻿using ForumApp.Data;
+using ForumApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; // Allows working with the database using Entity Framework
-using System.Linq; 
-using System.Threading.Tasks; 
+using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Assignment1.Models; // Brings in additional models like DiscussionViewModel
 
@@ -23,6 +23,7 @@ namespace ForumApp.Controllers // Defines this as part of the ForumApp namespace
         {
             var discussions = await _context.Discussions
                 .Include(d => d.Comments) // Include comments to count them
+                .Include(d => d.User) // Include the discussion owner's details
                 .OrderByDescending(d => d.CreatedAt) // Orders discussions by newest first
                 .Select(d => new DiscussionViewModel // Converts database data into a view model
                 {
@@ -31,7 +32,8 @@ namespace ForumApp.Controllers // Defines this as part of the ForumApp namespace
                     Content = d.Content, // Assigns the discussion content
                     CreatedAt = d.CreatedAt, // Assigns the discussion creation time
                     ImageUrl = d.ImageUrl, // Assigns the discussion image URL if available
-                    CommentCount = d.Comments.Count //  This line counts comments
+                    CommentCount = d.Comments.Count, // Counts comments
+                    UserName = d.User != null ? d.User.UserName : "Unknown" // Assigns owner's name
                 })
                 .ToListAsync(); // Converts the result to a list
 
@@ -53,8 +55,22 @@ namespace ForumApp.Controllers // Defines this as part of the ForumApp namespace
             return RedirectToAction("Details", "Discussions", new { id = discussion.DiscussionId });
         }
 
+        // 🔹 New Profile Page: Shows User Details & Their Discussions
+        public async Task<IActionResult> Profile(string id)
+        {
+            if (id == null) return NotFound();
 
+            var user = await _context.Users
+                .Include(u => u.Discussions) // Include user's discussion threads
+                .ThenInclude(d => d.Comments) // Include comments for each discussion
+                .Include(u => u.Discussions) // 🔹 Ensure Discussion includes User info
+                .ThenInclude(d => d.User)
+                .FirstOrDefaultAsync(u => u.Id == id);
 
+            if (user == null) return NotFound();
+
+            return View(user);
+        }
 
         // GET: Home/Privacy (Loads the Privacy Policy page)
         public IActionResult Privacy()

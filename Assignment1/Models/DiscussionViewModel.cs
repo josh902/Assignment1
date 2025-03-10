@@ -11,7 +11,7 @@ namespace Assignment1.Models // Ensure namespace matches project structure
         public string? ImageFilename { get; set; }
         public string? Content { get; set; }
         public string? ImageUrl { get; set; }
-        
+        public string? UserName { get; set; }
 
 
         public Discussion? Discussion { get; set; } // Navigation property

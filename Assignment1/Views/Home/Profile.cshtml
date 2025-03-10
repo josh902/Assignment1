@@ -1,0 +1,34 @@
+﻿@model ForumApp.Models.ApplicationUser
+
+<h2>@Model.UserName's Profile</h2>
+
+<!-- Profile Picture -->
+<img src="@Model.ProfilePictureUrl" alt="Profile Picture" width="150" height="150" style="border-radius: 50%;" />
+
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Location:</strong> @Model.Location</p>
+
+<h3>Discussion Threads by @Model.UserName</h3>
+
+@if (Model.Discussions != null && Model.Discussions.Any())
+{
+    <ul>
+        @foreach (var discussion in Model.Discussions)
+        {
+            <li>
+                <!-- 🔹 Updated the link to use Home/GetDiscussion -->
+                <a asp-controller="Home" asp-action="GetDiscussion" asp-route-id="@discussion.DiscussionId">
+                    @discussion.Title
+                </a>
+                - <small>@discussion.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small>
+                <span> | Comments: @discussion.Comments.Count</span>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No discussion threads available.</p>
+}
+
+<a href="@Url.Action("Index", "Home")">Back to Home</a>
