@@ -12,13 +12,14 @@ using ForumApp.Models;
 
 namespace Assignment1.Controllers
 {
+    [Authorize] // 🔹 Restrict access to authenticated users
     public class DiscussionsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager; //  Changed to ApplicationUser
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _imageFolderPath;
 
-        public DiscussionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager) //  Changed to ApplicationUser
+        public DiscussionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -35,7 +36,7 @@ namespace Assignment1.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var discussion = await _context.Discussions
-                .Include(d => d.Comments) // Include comments in the result
+                .Include(d => d.Comments)
                 .FirstOrDefaultAsync(d => d.DiscussionId == id);
 
             return discussion == null ? NotFound() : View(discussion);
@@ -58,12 +59,11 @@ namespace Assignment1.Controllers
                 return Unauthorized(); // Ensure user is logged in
             }
 
-            // Assign UserId before ModelState validation
-            discussion.UserId = user.Id;
+            discussion.UserId = user.Id; // 🔹 Assign logged-in user
             discussion.CreatedAt = DateTime.Now;
 
-            ModelState.Clear(); // Clear ModelState to prevent validation errors
-            TryValidateModel(discussion); // Revalidate model
+            ModelState.Clear();
+            TryValidateModel(discussion);
 
             if (!ModelState.IsValid)
             {
@@ -72,7 +72,6 @@ namespace Assignment1.Controllers
 
             try
             {
-                // Handle image upload if present
                 if (imageFile != null && imageFile.Length > 0)
                 {
                     discussion.ImageUrl = await SaveImageAsync(imageFile);
@@ -92,7 +91,6 @@ namespace Assignment1.Controllers
         }
 
         // Show "My Threads" page for the logged-in user
-        [Authorize]
         public async Task<IActionResult> MyThreads()
         {
             var userId = _userManager.GetUserId(User);
@@ -109,7 +107,15 @@ namespace Assignment1.Controllers
             if (id == null) return NotFound();
 
             var discussion = await _context.Discussions.FindAsync(id);
-            return discussion == null ? NotFound() : View(discussion);
+            if (discussion == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (discussion.UserId != userId) // 🔹 Restrict edit access
+            {
+                return Forbid(); // User is not the owner
+            }
+
+            return View(discussion);
         }
 
         // Handle updating a discussion
@@ -117,25 +123,27 @@ namespace Assignment1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Discussion discussion, IFormFile? imageFile)
         {
-            if (id != discussion.DiscussionId)
-                return NotFound();
+            if (id != discussion.DiscussionId) return NotFound();
 
             var existingDiscussion = await _context.Discussions.AsNoTracking().FirstOrDefaultAsync(d => d.DiscussionId == id);
-            if (existingDiscussion == null)
-                return NotFound();
+            if (existingDiscussion == null) return NotFound();
 
-            // Preserve UserId to prevent validation issues
-            discussion.UserId = existingDiscussion.UserId;
+            var userId = _userManager.GetUserId(User);
+            if (existingDiscussion.UserId != userId) // 🔹 Restrict edit access
+            {
+                return Forbid(); // User is not the owner
+            }
 
-            // Preserve existing image if no new image is uploaded
+            discussion.UserId = existingDiscussion.UserId; // Preserve UserId
+
             if (imageFile != null && imageFile.Length > 0)
             {
-                DeleteImage(existingDiscussion.ImageUrl); // Remove old image
+                DeleteImage(existingDiscussion.ImageUrl);
                 discussion.ImageUrl = await SaveImageAsync(imageFile);
             }
             else
             {
-                discussion.ImageUrl = existingDiscussion.ImageUrl; // Keep existing image
+                discussion.ImageUrl = existingDiscussion.ImageUrl;
             }
 
             try
@@ -159,7 +167,15 @@ namespace Assignment1.Controllers
             if (id == null) return NotFound();
 
             var discussion = await _context.Discussions.FindAsync(id);
-            return discussion == null ? NotFound() : View(discussion);
+            if (discussion == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (discussion.UserId != userId) // 🔹 Restrict delete access
+            {
+                return Forbid(); // User is not the owner
+            }
+
+            return View(discussion);
         }
 
         // Handle deleting a discussion
@@ -170,6 +186,12 @@ namespace Assignment1.Controllers
             var discussion = await _context.Discussions.FindAsync(id);
             if (discussion != null)
             {
+                var userId = _userManager.GetUserId(User);
+                if (discussion.UserId != userId) // 🔹 Restrict delete access
+                {
+                    return Forbid(); // User is not the owner
+                }
+
                 DeleteImage(discussion.ImageUrl);
                 _context.Discussions.Remove(discussion);
                 await _context.SaveChangesAsync();
@@ -184,7 +206,7 @@ namespace Assignment1.Controllers
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
             var filePath = Path.Combine(_imageFolderPath, fileName);
 
-            Directory.CreateDirectory(_imageFolderPath); // Ensure folder exists
+            Directory.CreateDirectory(_imageFolderPath);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -206,6 +228,5 @@ namespace Assignment1.Controllers
                 }
             }
         }
-
     }
 }
