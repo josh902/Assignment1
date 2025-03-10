@@ -5,6 +5,18 @@
 }
 
 <h2>@Model.Title</h2> <!-- Displays the discussion title -->
+<!-- Display discussion owner's profile picture and name -->
+<div>
+    @if (Model.User != null)
+    {
+        <img src="@Model.User.ProfilePictureUrl" alt="Profile Picture" width="50" height="50" style="border-radius: 50%;" />
+        <strong>By:</strong>
+        <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId">
+            @Model.User.UserName
+        </a>
+    }
+</div>
+
 @if (!string.IsNullOrEmpty(Model.ImageFilename)) // Checks if there is an image
 {
     <img src="~/images/@Model.ImageFilename" alt="Discussion Image" width="300" /> <!-- Displays the image -->
@@ -17,6 +29,17 @@
 @foreach (var comment in Model.Comments) // Loops through each comment in the discussion
 {
     <div class="comment">
+        <!-- 🔹 Display comment owner's profile picture and name -->
+        <p>
+            @if (comment.User != null)
+            {
+                <img src="@comment.User.ProfilePictureUrl" alt="Profile Picture" width="30" height="30" style="border-radius: 50%;" />
+                <a asp-controller="Profile" asp-action="Details" asp-route-id="@comment.UserId">
+                    @comment.User.UserName
+                </a>
+            }
+        </p>
+
         <p>@comment.Content</p> <!-- Displays the comment text -->
         <small>Posted on: @comment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small> <!-- Shows when the comment was posted -->
     </div>

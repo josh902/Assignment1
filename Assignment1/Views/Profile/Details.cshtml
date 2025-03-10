@@ -1,0 +1,10 @@
+﻿@model ForumApp.Models.ApplicationUser
+
+<h2>@Model.UserName's Profile</h2>
+
+<img src="@Model.ProfilePictureUrl" alt="Profile Picture" width="150" height="150" style="border-radius: 50%;" />
+
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Location:</strong> @Model.Location</p>
+
+<a href="@Url.Action("Index", "Home")">Back to Home</a>

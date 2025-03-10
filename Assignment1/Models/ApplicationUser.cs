@@ -17,5 +17,16 @@ namespace ForumApp.Models
         [NotMapped] // Prevents storing ImageFile in the database
         public IFormFile? ImageFile { get; set; }
 
+        // Fixed Profile Picture URL property to ensure correct image paths
+        [NotMapped]
+        public string ProfilePictureUrl
+        {
+            get
+            {
+                return string.IsNullOrEmpty(ImageFilename)
+                    ? "/images/placeholder.png" // Default placeholder if no image
+                    : $"/images/{ImageFilename}";
+            }
+        }
     }
 }

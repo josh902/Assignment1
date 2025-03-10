@@ -16,6 +16,7 @@
             <th>@Html.DisplayNameFor(model => model.Title)</th>
             <th>@Html.DisplayNameFor(model => model.Content)</th>
             <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
+            <th>Posted By</th> <!-- Added column for the discussion owner -->
             <th>Image</th>
             <th></th>
         </tr>
@@ -27,6 +28,23 @@
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
                 <td>@Html.DisplayFor(modelItem => item.Content)</td>
                 <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+
+                <!-- Ensure User exists before accessing properties -->
+                <td>
+                    @if (item.User != null && !string.IsNullOrEmpty(item.User.UserName))
+                    {
+                        <img src="@Url.Content(string.IsNullOrEmpty(item.User.ProfilePictureUrl) ? "/images/placeholder.png" : item.User.ProfilePictureUrl)"
+                             alt="Profile Picture" width="40" height="40" style="border-radius: 50%;" />
+                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.User.Id">
+                            @item.User.UserName
+                        </a>
+                    }
+                    else
+                    {
+                        <span>Unknown</span>
+                    }
+                </td>
+
                 <td>
                     @if (!string.IsNullOrEmpty(item.ImageUrl))
                     {

@@ -26,10 +26,10 @@ namespace ForumApp.Models
 
         public string? ImageFilename { get; set; }
 
-        // 🔹 Ensure correct Foreign Key Type
         [ForeignKey("ApplicationUser")]
-        public string? UserId { get; set; }  // Fix: Renamed from ApplicationUserId for consistency
+        public string? UserId { get; set; }
 
+        // Ensure navigation property exists for retrieving user details
         public ApplicationUser? User { get; set; }
 
         [NotMapped]

@@ -12,7 +12,7 @@ using ForumApp.Models;
 
 namespace Assignment1.Controllers
 {
-    [Authorize] // 🔹 Restrict access to authenticated users
+    [Authorize] // Restrict access to authenticated users
     public class DiscussionsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -29,7 +29,11 @@ namespace Assignment1.Controllers
         // Show a list of all discussions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Discussions.ToListAsync());
+            var discussions = await _context.Discussions
+                .Include(d => d.User) // Ensure user details are included
+                .ToListAsync();
+
+            return View(discussions);
         }
 
         // Show details of a specific discussion
@@ -59,7 +63,7 @@ namespace Assignment1.Controllers
                 return Unauthorized(); // Ensure user is logged in
             }
 
-            discussion.UserId = user.Id; // 🔹 Assign logged-in user
+            discussion.UserId = user.Id; // Assign logged-in user
             discussion.CreatedAt = DateTime.Now;
 
             ModelState.Clear();

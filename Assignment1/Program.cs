@@ -46,7 +46,13 @@ app.UseAuthorization();  // Enable user authorization
 // Map Identity pages (Register, Login, Logout, etc.)
 app.MapRazorPages();
 
-// Map default controller routes
+//  Ensure ProfileController and Other Controllers Work
+app.MapControllerRoute(
+    name: "profile",
+    pattern: "Profile/{action=Details}/{id?}",
+    defaults: new { controller = "Profile", action = "Details" });
+
+//  Keep Default Route for Discussions
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Discussions}/{action=Index}/{id?}");

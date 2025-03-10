@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ForumApp.Models;
 
 namespace ForumApp.Models
 {
@@ -18,13 +17,12 @@ namespace ForumApp.Models
         [ForeignKey("DiscussionId")]
         public Discussion? Discussion { get; set; }
 
-        // 🔹 Make UserId nullable (Remove [Required])
         public string? UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public ApplicationUser? User { get; set; }
+        public ApplicationUser? User { get; set; } // Ensure user reference exists
 
-        // Optional author field
+        // Optional author field (Can be removed if not used)
         public string? Author { get; set; }
     }
 }
